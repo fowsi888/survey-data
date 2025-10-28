@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Helper -kysely | Kauppakeskusavustajan tutkimus</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Helper -kysely</h1>
+            <p class="subtitle">Auta meitä kehittämään älykkäämpää kauppakeskuskokemusta</p>
+        </header>
+
+        <div class="survey-description">
+            <h2>Miksi tämä kysely?</h2>
+            <p>Kehitämme äänellä toimivaa "Smart Helper" -avustajaa kauppakeskuksiin. Tällä kyselyllä keräämme tärkeää dataa siitä, miten voimme tehdä kauppakeskusasioinnista helpompaa, nopeampaa ja hauskempaa.</p>
+        </div>
+
+        <!-- GDPR Notice -->
+        <div class="gdpr-notice">
+            <h3>🔒 Tietosuoja ja anonymiteetti</h3>
+            <p><strong>Vastauksesi ovat täysin anonyymejä.</strong> Emme kerää henkilötietoja kuten:</p>
+            <ul>
+                <li>❌ Nimeä tai sähköpostiosoitetta</li>
+                <li>❌ Puhelinnumeroa tai osoitetta</li>
+                <li>❌ Henkilötunnusta</li>
+                <li>❌ Asuinpaikkakuntaa tai tarkkaa sijaintia</li>
+                <li>❌ IP-osoitetta tai evästeitä</li>
+            </ul>
+            <p>Keräämme ainoastaan tilastollista tietoa (ikäryhmä, käyttömieltymykset) palvelun kehittämiseen. Vastauksiasi ei voida yhdistää sinuun henkilönä.</p>
+            <p><strong>Arvioitu vastausaika:</strong> 3-5 minuuttia</p>
+            <p style="margin-top: 15px;">
+                <a href="/privacy.html" target="_blank" style="color: #667eea; text-decoration: underline;">📄 Lue täydellinen tietosuojaseloste</a>
+            </p>
+        </div>
+
+        <form id="surveyForm">
+            <!-- Demographics Section -->
+            <section class="form-section">
+                <h2>Taustatiedot</h2>
+
+                <div class="form-group">
+                    <label for="age">Ikä *</label>
+                    <select id="age" name="age" required>
+                        <option value="">Valitse ikä</option>
+                        <option value="alle-18">Alle 18</option>
+                        <option value="18-24">18-24</option>
+                        <option value="25-34">25-34</option>
+                        <option value="35-44">35-44</option>
+                        <option value="45-54">45-54</option>
+                        <option value="55-64">55-64</option>
+                        <option value="65+">65+</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Sukupuoli *</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="gender" value="mies" required>
+                            <span>Mies</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="gender" value="nainen" required>
+                            <span>Nainen</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="gender" value="muu" required>
+                            <span>Muu</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="gender" value="en-halua-vastata" required>
+                            <span>En halua vastata</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="education">Koulutustaso *</label>
+                    <select id="education" name="education" required>
+                        <option value="">Valitse koulutustaso</option>
+                        <option value="peruskoulu">Peruskoulu</option>
+                        <option value="toinen-aste">Toinen aste</option>
+                        <option value="korkeakoulu">Korkeakoulu</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="occupation">Ammatti / Asema *</label>
+                    <input type="text" id="occupation" name="occupation" placeholder="Esim. Opiskelija, Insinööri, Myyjä" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Kuinka usein asioit kauppakeskuksessa? *</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="visitFrequency" value="paivittain" required>
+                            <span>Päivittäin</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="visitFrequency" value="viikoittain" required>
+                            <span>Viikoittain</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="visitFrequency" value="kuukausittain" required>
+                            <span>Kuukausittain</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="visitFrequency" value="harvemmin" required>
+                            <span>Harvemmin</span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Information Search Section -->
+            <section class="form-section">
+                <h2>Tiedonhaku kauppakeskuksessa</h2>
+                <p class="instruction">Mitä tietoa etsit kauppakeskuksesta useimmin? <strong>Valitse 5</strong> *</p>
+
+                <div class="checkbox-group" id="infoSearchGroup">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="tuote">
+                        <span>Tuotetta (älypuhelin, juoksulenkkarit, ykkösmaito…)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="palvelu">
+                        <span>Palvelua (parturi, ravintola, kukkakauppa, apteekki)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="liike">
+                        <span>Tiettyä liikettä (vaateliike, urheiluliike, sisustusliike, ruokakauppa)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="aukioloaika">
+                        <span>Liikkeen aukioloaikaa tai yhteystietoja</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="tarjous-tietty">
+                        <span>Tarjousta tietystä tuotteesta tai palvelusta</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="tarjous-paras">
+                        <span>Parhaita tarjouksia kaikista tuotteista tai palveluista</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="tapahtuma">
+                        <span>Tapahtumaa (teatteri, elokuvat, konsertit, fanitapahtuma, tanssit)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="neuvonta">
+                        <span>Neuvoa tuotteen palauttamiseen, käyttöön tai korjaamiseen</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="oheispalvelu">
+                        <span>Oheispalvelun sijaintia (wc, infopiste, hissit, pysäköintitilat, julkisen liikenteen pysäkki)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="pysakointi">
+                        <span>Vapaata pysäköintipaikkaa</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSearch" value="muu">
+                        <span>Muuta</span>
+                    </label>
+                </div>
+                <div class="form-group" id="infoSearchOtherContainer" style="display: none;">
+                    <label for="infoSearchOther">Mitä muuta?</label>
+                    <input type="text" id="infoSearchOther" name="infoSearchOther" placeholder="Kerro tarkemmin...">
+                </div>
+                <div class="selection-counter" id="infoSearchCounter">Valittu: 0/5</div>
+            </section>
+
+            <!-- Information Source Section -->
+            <section class="form-section">
+                <h2>Mistä haet tietoa?</h2>
+                <p class="instruction">Mistä yleensä haet tietoa kauppakeskukseen liittyen? <strong>Valitse kaikki sopivat</strong> *</p>
+
+                <div class="checkbox-group" id="infoSourceGroup">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSource" value="nettisivut">
+                        <span>Kauppakeskuksen nettisivuilta</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSource" value="mobiilisovellus">
+                        <span>Kauppakeskuksen kännykkäsovelluksesta</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSource" value="infonaytot">
+                        <span>Kauppakeskuksen infonäytöiltä</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSource" value="asiakaspalvelu">
+                        <span>Kauppakeskuksen asiakaspalvelupisteestä</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSource" value="henkilokunta">
+                        <span>Kysyn kauppakeskuksen muulta henkilökunnalta</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSource" value="liike-nettisivut">
+                        <span>Liikkeiden nettisivuilta</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="infoSource" value="muu">
+                        <span>Muualta</span>
+                    </label>
+                </div>
+                <div class="form-group" id="infoSourceOtherContainer" style="display: none;">
+                    <label for="infoSourceOther">Mistä muualta?</label>
+                    <input type="text" id="infoSourceOther" name="infoSourceOther" placeholder="Kerro tarkemmin...">
+                </div>
+                <div class="selection-counter" id="infoSourceCounter">Valittu: 0</div>
+            </section>
+
+            <!-- AI Services Section -->
+            <section class="form-section">
+                <h2>Tekoälyavusteinen kauppakeskusavustaja</h2>
+                <p class="instruction">Mitä tekoälyavusteisen kauppakeskusavustajan palveluita todennäköisesti käyttäisit? <strong>Valitse 3</strong> *</p>
+
+                <div class="checkbox-group" id="aiServicesGroup">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="aiServices" value="haku-tuote">
+                        <span>Haku tuotteen, palvelun tai ajanvietteen nimellä</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="aiServices" value="haku-liike">
+                        <span>Haku liikkeen nimellä</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="aiServices" value="paivan-tarjoukset">
+                        <span>Päivän parhaimmat tarjoukset</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="aiServices" value="raataloidyt-tarjoukset">
+                        <span>Sinulle räätälöidyt tarjoukset</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="aiServices" value="ruokalista">
+                        <span>Lounas- tai ruokalista</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="aiServices" value="ajanviete">
+                        <span>Ajanviete (vitsi, laulu, uutiset, peli)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="aiServices" value="kartta">
+                        <span>Kauppakeskuksen oma kartta</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="aiServices" value="muu">
+                        <span>Muu ominaisuus</span>
+                    </label>
+                </div>
+                <div class="form-group" id="aiServicesOtherContainer" style="display: none;">
+                    <label for="aiServicesOther">Mikä muu ominaisuus?</label>
+                    <input type="text" id="aiServicesOther" name="aiServicesOther" placeholder="Kerro tarkemmin...">
+                </div>
+                <div class="selection-counter" id="aiServicesCounter">Valittu: 0/3</div>
+            </section>
+
+            <!-- Interface Preference Section -->
+            <section class="form-section">
+                <h2>Käyttöliittymätoive</h2>
+                <p class="instruction">Millainen kauppakeskusavustajan käyttöliittymä miellyttäisi sinua eniten? <strong>Valitse 1</strong> *</p>
+
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="interfacePreference" value="kosketusnaytto" required>
+                        <span>Kosketusnäyttö</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="interfacePreference" value="aaniohjaus" required>
+                        <span>Ääniohjautuva käyttöliittymä</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="interfacePreference" value="kehonkieli" required>
+                        <span>Kehonkieleen reagoiva käyttöliittymä</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="interfacePreference" value="muu" required>
+                        <span>Muu käyttöliittymä</span>
+                    </label>
+                </div>
+                <div class="form-group" id="interfaceOtherContainer" style="display: none;">
+                    <label for="interfaceOther">Mikä muu käyttöliittymä?</label>
+                    <input type="text" id="interfaceOther" name="interfaceOther" placeholder="Kerro tarkemmin...">
+                </div>
+            </section>
+
+            <!-- GDPR Consent -->
+            <section class="form-section gdpr-consent-section">
+                <div class="consent-box">
+                    <label class="consent-label">
+                        <input type="checkbox" id="gdprConsent" name="gdprConsent" required>
+                        <span>
+                            Olen lukenut <a href="/privacy.html" target="_blank">tietosuojaselosteen</a> ja ymmärrän, että vastaukset ovat anonyymejä. Hyväksyn tietojen käsittelyn kyselyn tarkoituksiin. *
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Lähetä vastaukset</button>
+            </div>
+        </form>
+
+        <div id="successMessage" class="success-message" style="display: none;">
+            <h2>Kiitos vastauksestasi!</h2>
+            <p>Vastauksesi on tallennettu onnistuneesti. Autoit meitä kehittämään parempaa kauppakeskuskokemusta.</p>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Smart Helper -projekti. Kaikki oikeudet pidätetään.</p>
+            <p style="margin-top: 10px;">
+                <a href="/privacy.html" style="color: #667eea; text-decoration: underline;">Tietosuojaseloste</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="survey.js"></script>
+</body>
+</html>
