@@ -1,13 +1,17 @@
-Ongelmat
-Moni asiakas ei löydä helposti liikettä (esim. missä on DNA tai Otto-automaatti)
-Info-näyttöjä kyllä on, mutta osa ihmisistä ei osaa tai ei halua koskea niihin
-Jonot ja odotus tekevät ihmiset kärsimättömiksi
-Osa ihmisistä vain katselee ikkunoita, koska ei tiedä missä on tarjoukset
-Jotkut kyselisivät mielellään, mutta infopiste oli tyhjä tai kaukana
-Uudet liikkeet jäävät huomaamatta – ihmiset eivät tiedä, että ne ovat olemassa
+Smart-Helper
 
-Ratkaisu (meidän MVP):
-Äänellä toimiva “Smart Helper” – tekoälynäyttö auttaa ilman kosketusta
-Asiakas voi kysyä:“Missä on kahvila?” / “Onko tänään alennuksia?”
-Näyttö vastaa ystävällisesti ja ohjaa oikeaan paikkaan
-Tekee asioinnista helpompaa, nopeampaa ja hauskempaa
+Interaktiivinen ja tekoälyavusteinen näyttö kauppakeskuksessa​
+
+Voit käyttää sitä puhumalla ​
+
+Löydät sen avulla helpommin ja nopeammin tuotteet, palvelut ja tarjoukset​
+
+Se voi myös piristää päivääsi vitsillä, sananlaskulla tai pienellä musiikkiesityksellä​
+
+Smart-Helper sisältää kaikki perusominaisuudet, joita nykyisissä infonäytöissäkin on​
+
+Se sisältää myös perinteisen, hierarkisen valikon​
+
+Voit halutessasi käyttää Smart-Helperiä myös koskettamalla ja kirjoittamalla ​
+
+​

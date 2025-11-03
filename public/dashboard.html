@@ -353,92 +353,62 @@
                         <h3>Vastausten määrä</h3>
                         <div class="stat-value" id="totalResponses">0</div>
                     </div>
+                    <div class="stat-card">
+                        <h3>Keskiarvo Q1</h3>
+                        <div class="stat-value" id="avgQ1">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Keskiarvo Q2</h3>
+                        <div class="stat-value" id="avgQ2">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Keskiarvo Q3</h3>
+                        <div class="stat-value" id="avgQ3">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Keskiarvo Q4</h3>
+                        <div class="stat-value" id="avgQ4">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Keskiarvo Q5</h3>
+                        <div class="stat-value" id="avgQ5">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Keskiarvo Q6</h3>
+                        <div class="stat-value" id="avgQ6">0</div>
+                    </div>
                 </div>
 
-                <!-- Charts -->
+                <!-- Question Charts -->
                 <div class="charts-grid">
                     <div class="chart-container">
-                        <h2>Ikäjakauma</h2>
-                        <canvas id="ageChart"></canvas>
+                        <h2>Q1: Ymmärrys Smart-Helperistä</h2>
+                        <canvas id="q1Chart"></canvas>
                     </div>
 
                     <div class="chart-container">
-                        <h2>Sukupuolijakauma</h2>
-                        <canvas id="genderChart"></canvas>
+                        <h2>Q2: Luontevuus puhumiseen</h2>
+                        <canvas id="q2Chart"></canvas>
                     </div>
 
                     <div class="chart-container">
-                        <h2>Koulutustaso</h2>
-                        <canvas id="educationChart"></canvas>
+                        <h2>Q3: Tiedon nopeutuminen</h2>
+                        <canvas id="q3Chart"></canvas>
                     </div>
 
                     <div class="chart-container">
-                        <h2>Käyttöliittymätoive</h2>
-                        <canvas id="interfaceChart"></canvas>
+                        <h2>Q4: Todennäköisyys käyttää</h2>
+                        <canvas id="q4Chart"></canvas>
                     </div>
 
                     <div class="chart-container">
-                        <h2>Asiointitiheys</h2>
-                        <canvas id="visitFrequencyChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-container" style="margin-bottom: 20px; max-height: 350px;">
-                    <h2>Mitä tietoa etsitään kauppakeskuksesta? (Top 10)</h2>
-                    <canvas id="infoSearchChart"></canvas>
-                </div>
-
-                <div class="chart-container" style="margin-bottom: 20px; max-height: 350px;">
-                    <h2>Mistä haetaan tietoa kauppakeskuksesta?</h2>
-                    <canvas id="infoSourceChart"></canvas>
-                </div>
-
-                <div class="chart-container" style="max-height: 350px;">
-                    <h2>Tekoälyavustajan palvelut (Top 8)</h2>
-                    <canvas id="aiServicesChart"></canvas>
-                </div>
-
-                <!-- Correlation Analysis Section -->
-                <div class="correlation-section" style="margin-top: 30px;">
-                    <h2 style="color: var(--text-primary); margin-bottom: 20px; font-size: 1.4rem; padding: 0 5px;">📊 Korrelaatioanalyysi ja Käyttäjäprofiilit</h2>
-
-                    <!-- Insights Cards -->
-                    <div class="insights-container" style="background: white; padding: 25px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 20px;">
-                        <h3 style="color: var(--primary-color); margin-bottom: 15px; font-size: 1.1rem;">💡 Keskeiset löydökset</h3>
-                        <div id="insightsContent" style="display: grid; gap: 12px;">
-                            <div class="loading" style="padding: 20px;">Analysoidaan dataa...</div>
-                        </div>
+                        <h2>Q5: Asiakaskokemus vieraassa</h2>
+                        <canvas id="q5Chart"></canvas>
                     </div>
 
-                    <!-- Correlation Charts Grid -->
-                    <div class="charts-grid">
-                        <div class="chart-container">
-                            <h2>Ikä vs. Käyttöliittymä</h2>
-                            <canvas id="ageVsInterfaceChart"></canvas>
-                        </div>
-
-                        <div class="chart-container">
-                            <h2>Koulutustaso vs. Käyttöliittymä</h2>
-                            <canvas id="educationVsInterfaceChart"></canvas>
-                        </div>
-
-                        <div class="chart-container">
-                            <h2>Asiointitiheys vs. Käyttöliittymä</h2>
-                            <canvas id="visitVsInterfaceChart"></canvas>
-                        </div>
-
-                        <div class="chart-container">
-                            <h2>Ikä vs. Asiointitiheys</h2>
-                            <canvas id="ageVsVisitChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Occupation Patterns -->
-                    <div class="occupation-patterns" style="background: white; padding: 25px; border-radius: 12px; box-shadow: var(--shadow); margin-top: 20px;">
-                        <h3 style="color: var(--primary-color); margin-bottom: 15px; font-size: 1.1rem;">👥 Ammattiprofiilit ja preferenssit</h3>
-                        <div id="occupationPatternsContent">
-                            <div class="loading" style="padding: 20px;">Ladataan ammattitietoja...</div>
-                        </div>
+                    <div class="chart-container">
+                        <h2>Q6: Yleinen mukavuus</h2>
+                        <canvas id="q6Chart"></canvas>
                     </div>
                 </div>
 
@@ -450,11 +420,12 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Ikä</th>
-                                    <th>Sukupuoli</th>
-                                    <th>Koulutus</th>
-                                    <th>Ammatti</th>
-                                    <th>Käyttöliittymä</th>
+                                    <th>Q1</th>
+                                    <th>Q2</th>
+                                    <th>Q3</th>
+                                    <th>Q4</th>
+                                    <th>Q5</th>
+                                    <th>Q6</th>
                                     <th>Aika</th>
                                 </tr>
                             </thead>

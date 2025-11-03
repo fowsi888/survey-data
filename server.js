@@ -36,43 +36,21 @@ const db = new sqlite3.Database(DB_PATH, (err) => {
 
 // Create tables
 function initializeDatabase() {
-  // Responses table
+  // Responses table - New simplified structure for rating questions
   db.run(`CREATE TABLE IF NOT EXISTS responses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    age TEXT,
-    gender TEXT,
-    education TEXT,
-    occupation TEXT,
-    visit_frequency TEXT,
-    info_search TEXT,
-    info_search_other TEXT,
-    info_source TEXT,
-    info_source_other TEXT,
-    ai_services TEXT,
-    ai_services_other TEXT,
-    interface_preference TEXT,
-    interface_other TEXT,
+    q1 INTEGER NOT NULL,
+    q2 INTEGER NOT NULL,
+    q3 INTEGER NOT NULL,
+    q4 INTEGER NOT NULL,
+    q5 INTEGER NOT NULL,
+    q6 INTEGER NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
   )`, (err) => {
     if (err) {
       console.error('Error creating responses table:', err);
     } else {
-      // Add new columns if they don't exist (for existing databases)
-      db.run(`ALTER TABLE responses ADD COLUMN visit_frequency TEXT`, (err) => {
-        if (err && !err.message.includes('duplicate column')) {
-          console.error('Error adding visit_frequency column:', err);
-        }
-      });
-      db.run(`ALTER TABLE responses ADD COLUMN info_source TEXT`, (err) => {
-        if (err && !err.message.includes('duplicate column')) {
-          console.error('Error adding info_source column:', err);
-        }
-      });
-      db.run(`ALTER TABLE responses ADD COLUMN info_source_other TEXT`, (err) => {
-        if (err && !err.message.includes('duplicate column')) {
-          console.error('Error adding info_source_other column:', err);
-        }
-      });
+      console.log('Responses table created or already exists');
     }
   });
 
@@ -117,42 +95,20 @@ app.get('/', (req, res) => {
 
 // Submit survey response
 app.post('/api/submit-survey', (req, res) => {
-  const {
-    age,
-    gender,
-    education,
-    occupation,
-    visitFrequency,
-    infoSearch,
-    infoSearchOther,
-    infoSource,
-    infoSourceOther,
-    aiServices,
-    aiServicesOther,
-    interfacePreference,
-    interfaceOther
-  } = req.body;
+  const { q1, q2, q3, q4, q5, q6 } = req.body;
 
-  const query = `INSERT INTO responses
-    (age, gender, education, occupation, visit_frequency, info_search, info_search_other,
-     info_source, info_source_other, ai_services, ai_services_other, interface_preference, interface_other)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  // Validate that all questions are answered with values 0-5
+  const questions = [q1, q2, q3, q4, q5, q6];
+  for (let i = 0; i < questions.length; i++) {
+    const value = parseInt(questions[i]);
+    if (isNaN(value) || value < 0 || value > 5) {
+      return res.status(400).json({ error: `Invalid value for question ${i + 1}` });
+    }
+  }
 
-  db.run(query, [
-    age,
-    gender,
-    education,
-    occupation,
-    visitFrequency,
-    JSON.stringify(infoSearch),
-    infoSearchOther || '',
-    JSON.stringify(infoSource),
-    infoSourceOther || '',
-    JSON.stringify(aiServices),
-    aiServicesOther || '',
-    interfacePreference,
-    interfaceOther || ''
-  ], function(err) {
+  const query = `INSERT INTO responses (q1, q2, q3, q4, q5, q6) VALUES (?, ?, ?, ?, ?, ?)`;
+
+  db.run(query, [q1, q2, q3, q4, q5, q6], function(err) {
     if (err) {
       console.error('Error inserting survey response:', err);
       return res.status(500).json({ error: 'Database error' });
@@ -208,23 +164,12 @@ app.get('/api/responses', isAuthenticated, (req, res) => {
       console.error('Error fetching responses:', err);
       return res.status(500).json({ error: 'Database error' });
     }
-
-    // Parse JSON strings back to arrays
-    const parsedRows = rows.map(row => ({
-      ...row,
-      info_search: JSON.parse(row.info_search || '[]'),
-      info_source: JSON.parse(row.info_source || '[]'),
-      ai_services: JSON.parse(row.ai_services || '[]')
-    }));
-
-    res.json(parsedRows);
+    res.json(rows);
   });
 });
 
 // Get analytics summary (protected)
 app.get('/api/analytics', isAuthenticated, (req, res) => {
-  const analytics = {};
-
   // Get total responses
   db.get('SELECT COUNT(*) as total FROM responses', [], (err, row) => {
     if (err) {
@@ -232,357 +177,56 @@ app.get('/api/analytics', isAuthenticated, (req, res) => {
       return res.status(500).json({ error: 'Database error' });
     }
 
-    analytics.total = row.total;
+    const total = row.total;
 
-    // Get all responses for processing
+    // Get aggregated statistics for each question
     db.all('SELECT * FROM responses', [], (err, rows) => {
       if (err) {
         console.error('Error fetching all responses:', err);
         return res.status(500).json({ error: 'Database error' });
       }
 
-      // Process demographics
-      analytics.demographics = {
-        age: {},
-        gender: {},
-        education: {},
-        occupation: {}
+      // Initialize counters for each question (0-5 scale)
+      const questionStats = {
+        q1: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, avg: 0 },
+        q2: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, avg: 0 },
+        q3: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, avg: 0 },
+        q4: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, avg: 0 },
+        q5: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, avg: 0 },
+        q6: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, avg: 0 }
       };
 
-      // Process visit frequency
-      analytics.visitFrequency = {};
-
-      // Process info search
-      analytics.infoSearch = {};
-
-      // Process info source
-      analytics.infoSource = {};
-
-      // Process AI services
-      analytics.aiServices = {};
-
-      // Process interface preferences
-      analytics.interfacePreference = {};
-
+      // Count responses for each rating
       rows.forEach(row => {
-        // Demographics
-        analytics.demographics.age[row.age] = (analytics.demographics.age[row.age] || 0) + 1;
-        analytics.demographics.gender[row.gender] = (analytics.demographics.gender[row.gender] || 0) + 1;
-        analytics.demographics.education[row.education] = (analytics.demographics.education[row.education] || 0) + 1;
-        if (row.occupation) {
-          analytics.demographics.occupation[row.occupation] = (analytics.demographics.occupation[row.occupation] || 0) + 1;
-        }
-
-        // Visit Frequency
-        if (row.visit_frequency) {
-          analytics.visitFrequency[row.visit_frequency] = (analytics.visitFrequency[row.visit_frequency] || 0) + 1;
-        }
-
-        // Info Search
-        try {
-          const infoSearchArray = JSON.parse(row.info_search || '[]');
-          infoSearchArray.forEach(item => {
-            analytics.infoSearch[item] = (analytics.infoSearch[item] || 0) + 1;
-          });
-        } catch (e) {
-          console.error('Error parsing info_search:', e);
-        }
-
-        // Info Source
-        try {
-          const infoSourceArray = JSON.parse(row.info_source || '[]');
-          infoSourceArray.forEach(item => {
-            analytics.infoSource[item] = (analytics.infoSource[item] || 0) + 1;
-          });
-        } catch (e) {
-          console.error('Error parsing info_source:', e);
-        }
-
-        // AI Services
-        try {
-          const aiServicesArray = JSON.parse(row.ai_services || '[]');
-          aiServicesArray.forEach(item => {
-            analytics.aiServices[item] = (analytics.aiServices[item] || 0) + 1;
-          });
-        } catch (e) {
-          console.error('Error parsing ai_services:', e);
-        }
-
-        // Interface Preference
-        if (row.interface_preference) {
-          analytics.interfacePreference[row.interface_preference] =
-            (analytics.interfacePreference[row.interface_preference] || 0) + 1;
+        for (let i = 1; i <= 6; i++) {
+          const qKey = `q${i}`;
+          const value = row[qKey];
+          if (value >= 0 && value <= 5) {
+            questionStats[qKey][value]++;
+          }
         }
       });
 
-      res.json(analytics);
+      // Calculate averages
+      for (let i = 1; i <= 6; i++) {
+        const qKey = `q${i}`;
+        let sum = 0;
+        let count = 0;
+        for (let rating = 0; rating <= 5; rating++) {
+          sum += rating * questionStats[qKey][rating];
+          count += questionStats[qKey][rating];
+        }
+        questionStats[qKey].avg = count > 0 ? (sum / count).toFixed(2) : 0;
+      }
+
+      res.json({
+        total,
+        questionStats
+      });
     });
   });
 });
 
-// Get correlation patterns (protected)
-app.get('/api/correlations', isAuthenticated, (req, res) => {
-  db.all('SELECT * FROM responses', [], (err, rows) => {
-    if (err) {
-      console.error('Error fetching responses for correlations:', err);
-      return res.status(500).json({ error: 'Database error' });
-    }
-
-    const correlations = {
-      // Age vs Interface
-      ageVsInterface: {},
-      // Education vs Info Search
-      educationVsInfoSearch: {},
-      // Occupation vs AI Services
-      occupationVsAiServices: {},
-      // Visit Frequency vs Interface
-      visitFrequencyVsInterface: {},
-      // Age vs Visit Frequency
-      ageVsVisitFrequency: {},
-      // Education vs Interface
-      educationVsInterface: {},
-      // Occupation patterns
-      occupationPatterns: {}
-    };
-
-    rows.forEach(row => {
-      // Age vs Interface
-      const age = row.age;
-      const interfacePref = row.interface_preference;
-      if (age && interfacePref) {
-        if (!correlations.ageVsInterface[age]) correlations.ageVsInterface[age] = {};
-        correlations.ageVsInterface[age][interfacePref] = (correlations.ageVsInterface[age][interfacePref] || 0) + 1;
-      }
-
-      // Education vs Info Search
-      const education = row.education;
-      if (education && row.info_search) {
-        try {
-          const infoSearchArray = JSON.parse(row.info_search);
-          if (!correlations.educationVsInfoSearch[education]) correlations.educationVsInfoSearch[education] = {};
-          infoSearchArray.forEach(item => {
-            correlations.educationVsInfoSearch[education][item] = (correlations.educationVsInfoSearch[education][item] || 0) + 1;
-          });
-        } catch (e) {}
-      }
-
-      // Occupation vs AI Services
-      const occupation = row.occupation;
-      if (occupation && row.ai_services) {
-        try {
-          const aiServicesArray = JSON.parse(row.ai_services);
-          if (!correlations.occupationVsAiServices[occupation]) correlations.occupationVsAiServices[occupation] = {};
-          aiServicesArray.forEach(item => {
-            correlations.occupationVsAiServices[occupation][item] = (correlations.occupationVsAiServices[occupation][item] || 0) + 1;
-          });
-        } catch (e) {}
-      }
-
-      // Visit Frequency vs Interface
-      const visitFreq = row.visit_frequency;
-      if (visitFreq && interfacePref) {
-        if (!correlations.visitFrequencyVsInterface[visitFreq]) correlations.visitFrequencyVsInterface[visitFreq] = {};
-        correlations.visitFrequencyVsInterface[visitFreq][interfacePref] = (correlations.visitFrequencyVsInterface[visitFreq][interfacePref] || 0) + 1;
-      }
-
-      // Age vs Visit Frequency
-      if (age && visitFreq) {
-        if (!correlations.ageVsVisitFrequency[age]) correlations.ageVsVisitFrequency[age] = {};
-        correlations.ageVsVisitFrequency[age][visitFreq] = (correlations.ageVsVisitFrequency[age][visitFreq] || 0) + 1;
-      }
-
-      // Education vs Interface
-      if (education && interfacePref) {
-        if (!correlations.educationVsInterface[education]) correlations.educationVsInterface[education] = {};
-        correlations.educationVsInterface[education][interfacePref] = (correlations.educationVsInterface[education][interfacePref] || 0) + 1;
-      }
-
-      // Occupation patterns (aggregate all data per occupation)
-      if (occupation) {
-        if (!correlations.occupationPatterns[occupation]) {
-          correlations.occupationPatterns[occupation] = {
-            count: 0,
-            ageGroups: {},
-            education: {},
-            visitFrequency: {},
-            infoSearch: {},
-            aiServices: {},
-            interface: {}
-          };
-        }
-
-        correlations.occupationPatterns[occupation].count += 1;
-
-        if (age) {
-          correlations.occupationPatterns[occupation].ageGroups[age] =
-            (correlations.occupationPatterns[occupation].ageGroups[age] || 0) + 1;
-        }
-        if (education) {
-          correlations.occupationPatterns[occupation].education[education] =
-            (correlations.occupationPatterns[occupation].education[education] || 0) + 1;
-        }
-        if (visitFreq) {
-          correlations.occupationPatterns[occupation].visitFrequency[visitFreq] =
-            (correlations.occupationPatterns[occupation].visitFrequency[visitFreq] || 0) + 1;
-        }
-        if (interfacePref) {
-          correlations.occupationPatterns[occupation].interface[interfacePref] =
-            (correlations.occupationPatterns[occupation].interface[interfacePref] || 0) + 1;
-        }
-
-        try {
-          const infoSearchArray = JSON.parse(row.info_search || '[]');
-          infoSearchArray.forEach(item => {
-            correlations.occupationPatterns[occupation].infoSearch[item] =
-              (correlations.occupationPatterns[occupation].infoSearch[item] || 0) + 1;
-          });
-        } catch (e) {}
-
-        try {
-          const aiServicesArray = JSON.parse(row.ai_services || '[]');
-          aiServicesArray.forEach(item => {
-            correlations.occupationPatterns[occupation].aiServices[item] =
-              (correlations.occupationPatterns[occupation].aiServices[item] || 0) + 1;
-          });
-        } catch (e) {}
-      }
-    });
-
-    res.json(correlations);
-  });
-});
-
-// Get correlation patterns (protected)
-app.get('/api/correlations', isAuthenticated, (req, res) => {
-  db.all('SELECT * FROM responses', [], (err, rows) => {
-    if (err) {
-      console.error('Error fetching responses for correlations:', err);
-      return res.status(500).json({ error: 'Database error' });
-    }
-
-    const correlations = {
-      // Age vs Interface
-      ageVsInterface: {},
-      // Education vs Info Search
-      educationVsInfoSearch: {},
-      // Occupation vs AI Services
-      occupationVsAiServices: {},
-      // Visit Frequency vs Interface
-      visitFrequencyVsInterface: {},
-      // Age vs Visit Frequency
-      ageVsVisitFrequency: {},
-      // Education vs Interface
-      educationVsInterface: {},
-      // Occupation patterns
-      occupationPatterns: {}
-    };
-
-    rows.forEach(row => {
-      // Age vs Interface
-      const age = row.age;
-      const interfacePref = row.interface_preference;
-      if (age && interfacePref) {
-        if (!correlations.ageVsInterface[age]) correlations.ageVsInterface[age] = {};
-        correlations.ageVsInterface[age][interfacePref] = (correlations.ageVsInterface[age][interfacePref] || 0) + 1;
-      }
-
-      // Education vs Info Search
-      const education = row.education;
-      if (education && row.info_search) {
-        try {
-          const infoSearchArray = JSON.parse(row.info_search);
-          if (!correlations.educationVsInfoSearch[education]) correlations.educationVsInfoSearch[education] = {};
-          infoSearchArray.forEach(item => {
-            correlations.educationVsInfoSearch[education][item] = (correlations.educationVsInfoSearch[education][item] || 0) + 1;
-          });
-        } catch (e) {}
-      }
-
-      // Occupation vs AI Services
-      const occupation = row.occupation;
-      if (occupation && row.ai_services) {
-        try {
-          const aiServicesArray = JSON.parse(row.ai_services);
-          if (!correlations.occupationVsAiServices[occupation]) correlations.occupationVsAiServices[occupation] = {};
-          aiServicesArray.forEach(item => {
-            correlations.occupationVsAiServices[occupation][item] = (correlations.occupationVsAiServices[occupation][item] || 0) + 1;
-          });
-        } catch (e) {}
-      }
-
-      // Visit Frequency vs Interface
-      const visitFreq = row.visit_frequency;
-      if (visitFreq && interfacePref) {
-        if (!correlations.visitFrequencyVsInterface[visitFreq]) correlations.visitFrequencyVsInterface[visitFreq] = {};
-        correlations.visitFrequencyVsInterface[visitFreq][interfacePref] = (correlations.visitFrequencyVsInterface[visitFreq][interfacePref] || 0) + 1;
-      }
-
-      // Age vs Visit Frequency
-      if (age && visitFreq) {
-        if (!correlations.ageVsVisitFrequency[age]) correlations.ageVsVisitFrequency[age] = {};
-        correlations.ageVsVisitFrequency[age][visitFreq] = (correlations.ageVsVisitFrequency[age][visitFreq] || 0) + 1;
-      }
-
-      // Education vs Interface
-      if (education && interfacePref) {
-        if (!correlations.educationVsInterface[education]) correlations.educationVsInterface[education] = {};
-        correlations.educationVsInterface[education][interfacePref] = (correlations.educationVsInterface[education][interfacePref] || 0) + 1;
-      }
-
-      // Occupation patterns (aggregate all data per occupation)
-      if (occupation) {
-        if (!correlations.occupationPatterns[occupation]) {
-          correlations.occupationPatterns[occupation] = {
-            count: 0,
-            ageGroups: {},
-            education: {},
-            visitFrequency: {},
-            infoSearch: {},
-            aiServices: {},
-            interface: {}
-          };
-        }
-
-        correlations.occupationPatterns[occupation].count += 1;
-
-        if (age) {
-          correlations.occupationPatterns[occupation].ageGroups[age] =
-            (correlations.occupationPatterns[occupation].ageGroups[age] || 0) + 1;
-        }
-        if (education) {
-          correlations.occupationPatterns[occupation].education[education] =
-            (correlations.occupationPatterns[occupation].education[education] || 0) + 1;
-        }
-        if (visitFreq) {
-          correlations.occupationPatterns[occupation].visitFrequency[visitFreq] =
-            (correlations.occupationPatterns[occupation].visitFrequency[visitFreq] || 0) + 1;
-        }
-        if (interfacePref) {
-          correlations.occupationPatterns[occupation].interface[interfacePref] =
-            (correlations.occupationPatterns[occupation].interface[interfacePref] || 0) + 1;
-        }
-
-        try {
-          const infoSearchArray = JSON.parse(row.info_search || '[]');
-          infoSearchArray.forEach(item => {
-            correlations.occupationPatterns[occupation].infoSearch[item] =
-              (correlations.occupationPatterns[occupation].infoSearch[item] || 0) + 1;
-          });
-        } catch (e) {}
-
-        try {
-          const aiServicesArray = JSON.parse(row.ai_services || '[]');
-          aiServicesArray.forEach(item => {
-            correlations.occupationPatterns[occupation].aiServices[item] =
-              (correlations.occupationPatterns[occupation].aiServices[item] || 0) + 1;
-          });
-        } catch (e) {}
-      }
-    });
-
-    res.json(correlations);
-  });
-});
 
 // Serve dashboard
 app.get('/dashboard', (req, res) => {

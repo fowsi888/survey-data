@@ -3,6 +3,7 @@
 Opas Smart Helper -kyselyn käyttöönotolle AWS EC2-palvelimella subdomainin kanssa.
 
 ## Sisältö
+- [Pika-komennot](#pika-komennot)
 - [Esivalmistelut](#esivalmistelut)
 - [EC2-palvelimen asetukset](#ec2-palvelimen-asetukset)
 - [Tiedostojen siirto](#tiedostojen-siirto)
@@ -16,11 +17,51 @@ Opas Smart Helper -kyselyn käyttöönotolle AWS EC2-palvelimella subdomainin ka
 
 ---
 
+## Pika-komennot
+
+**🚀 Päivitä sovellus EC2:een (TÄRKEIN KOMENTO!):**
+```bash
+cd /Users/eng-fowsi/Desktop/Innovatio-survey
+./deploy-to-ec2.sh
+```
+
+**🔐 Yhdistä EC2:een SSH:lla:**
+```bash
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127
+```
+
+**🗑️ Poista vanha tietokanta EC2:sta (ennen ensimmäistä deploymenttiä):**
+```bash
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127 'rm /home/ubuntu/survey-app/survey.db'
+```
+
+**📊 Tarkista sovelluksen tila:**
+```bash
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127 'pm2 status'
+```
+
+**📋 Katso lokeja:**
+```bash
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127 'pm2 logs survey-app --lines 50'
+```
+
+**🔄 Käynnistä sovellus uudelleen:**
+```bash
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127 'pm2 restart survey-app'
+```
+
+**💾 Varmuuskopioi tietokanta EC2:sta paikalliselle koneelle:**
+```bash
+scp -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127:/home/ubuntu/survey-app/survey.db ~/Desktop/survey-backup-$(date +%Y%m%d).db
+```
+
+---
+
 ## Esivalmistelut
 
 ### 1. Tarvittavat tiedot
-- ✅ EC2-palvelimen IP-osoite
-- ✅ SSH-avain (.pem tiedosto)
+- ✅ EC2-palvelimen IP-osoite: **13.50.146.127**
+- ✅ SSH-avain (.pem tiedosto): **/Users/eng-fowsi/Desktop/eu-sw.pem**
 - ✅ Domain-nimi (esim. `yourdomain.com`)
 - ✅ Haluttu subdomain (esim. `survey.yourdomain.com`)
 
@@ -47,13 +88,10 @@ Inbound Rules:
 
 ```bash
 # Aseta avaimen oikeudet (vain ensimmäisellä kerralla)
-chmod 400 /path/to/your-key.pem
+chmod 400 /Users/eng-fowsi/Desktop/eu-sw.pem
 
 # Yhdistä palvelimeen (Ubuntu)
-ssh -i /path/to/your-key.pem ubuntu@YOUR_EC2_IP
-
-# Tai Amazon Linux
-ssh -i /path/to/your-key.pem ec2-user@YOUR_EC2_IP
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127
 ```
 
 ### 3. Päivitä järjestelmä
@@ -68,7 +106,32 @@ sudo yum update -y                        # Amazon Linux
 
 ## Tiedostojen siirto
 
-### Vaihtoehto 1: SCP (suositeltu pienille projekteille)
+### Vaihtoehto 1: Automaattinen deployment script (SUOSITELTU!)
+
+**Yksinkertaisin tapa - käytä valmista skriptiä:**
+```bash
+# Siirry projektin juureen
+cd /Users/eng-fowsi/Desktop/Innovatio-survey
+
+# Aja deployment skripti
+./deploy-to-ec2.sh
+```
+
+**Skripti hoitaa automaattisesti:**
+- ✅ Paketoi sovelluksen (jättää pois node_modules ja .db)
+- ✅ Kopioi EC2:een
+- ✅ Purkaa tiedostot
+- ✅ Varmuuskopioi ja palauttaa .env tiedoston
+- ✅ Asentaa riippuvuudet
+- ✅ Käynnistää PM2:n uudelleen
+- ✅ Siivoaa väliaikaiset tiedostot
+
+**Huom:** Muista poistaa vanha survey.db tietokanta EC2:sta ennen ensimmäistä deploymenttia!
+```bash
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127 'rm /home/ubuntu/survey-app/survey.db'
+```
+
+### Vaihtoehto 2: Manuaalinen SCP
 
 **Paketoi projekti paikallisesti:**
 ```bash
@@ -80,16 +143,17 @@ tar -czf survey-app.tar.gz \
   --exclude='node_modules' \
   --exclude='*.db' \
   --exclude='.DS_Store' \
+  --exclude='.git' \
   .
 ```
 
 **Siirrä palvelimelle:**
 ```bash
 # Siirrä paketti EC2:een
-scp -i /path/to/your-key.pem survey-app.tar.gz ubuntu@YOUR_EC2_IP:~/
+scp -i /Users/eng-fowsi/Desktop/eu-sw.pem survey-app.tar.gz ubuntu@13.50.146.127:~/
 
 # Yhdistä EC2:een
-ssh -i /path/to/your-key.pem ubuntu@YOUR_EC2_IP
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127
 
 # Pura paketti
 mkdir -p ~/survey-app
@@ -97,7 +161,7 @@ tar -xzf survey-app.tar.gz -C ~/survey-app
 cd ~/survey-app
 ```
 
-### Vaihtoehto 2: Git (suositeltu tuotantoon)
+### Vaihtoehto 3: Git (pitkäaikaiseen ylläpitoon)
 
 **Luo Git repository:**
 ```bash
@@ -504,6 +568,16 @@ sudo journalctl -u nginx -f
 
 ## Päivitykset
 
+### Päivitä sovellus (Automaattinen - SUOSITELTU!)
+
+**Yksinkertaisesti aja deployment skripti:**
+```bash
+cd /Users/eng-fowsi/Desktop/Innovatio-survey
+./deploy-to-ec2.sh
+```
+
+Skripti hoitaa kaiken automaattisesti ja säilyttää .env tiedoston!
+
 ### Päivitä sovellus (Git)
 
 ```bash
@@ -519,15 +593,16 @@ npm install --production
 pm2 restart survey-app
 ```
 
-### Päivitä sovellus (SCP)
+### Päivitä sovellus (Manuaalinen SCP)
 
 ```bash
 # Paikallisesti - luo uusi paketti
 cd /Users/eng-fowsi/Desktop/Innovatio-survey
-tar -czf survey-app.tar.gz --exclude='node_modules' --exclude='*.db' .
-scp -i /path/to/your-key.pem survey-app.tar.gz ubuntu@YOUR_EC2_IP:~/
+tar -czf survey-app.tar.gz --exclude='node_modules' --exclude='*.db' --exclude='.git' .
+scp -i /Users/eng-fowsi/Desktop/eu-sw.pem survey-app.tar.gz ubuntu@13.50.146.127:~/
 
 # EC2:ssa
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127
 cd ~/survey-app
 tar -xzf ../survey-app.tar.gz
 npm install --production
@@ -643,46 +718,55 @@ ps aux | grep node
 
 ```bash
 # 1. Yhdistä EC2:een
-ssh -i your-key.pem ubuntu@YOUR_EC2_IP
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127
 
 # 2. Asenna Node.js
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# 3. Siirrä ja pura sovellus
-scp -i your-key.pem survey-app.tar.gz ubuntu@YOUR_EC2_IP:~/
-mkdir ~/survey-app && tar -xzf survey-app.tar.gz -C ~/survey-app
+# 3. Luo sovellushakemisto
+mkdir -p ~/survey-app
 
-# 4. Asenna riippuvuudet
+# 4. Kirjaudu ulos EC2:sta
+exit
+
+# 5. Käytä automaattista deployment skriptiä (PAIKALLISELLA KONEELLA)
+cd /Users/eng-fowsi/Desktop/Innovatio-survey
+./deploy-to-ec2.sh
+
+# 6. Takaisin EC2:een ja konfiguroi .env
+ssh -i /Users/eng-fowsi/Desktop/eu-sw.pem ubuntu@13.50.146.127
 cd ~/survey-app
-npm install --production
-
-# 5. Konfiguroi .env (muokkaa salasanat!)
 nano .env
+# Muokkaa salasanat ja SESSION_SECRET!
 
-# 6. Asenna PM2
+# 7. Asenna PM2
 sudo npm install -g pm2
 pm2 start server.js --name survey-app
-pm2 startup && pm2 save
+pm2 startup
+# SUORITA komento joka tulostuu!
+pm2 save
 
-# 7. Asenna Nginx
+# 8. Asenna Nginx
 sudo apt install -y nginx
 
-# 8. Konfiguroi Nginx
+# 9. Konfiguroi Nginx
 sudo nano /etc/nginx/sites-available/survey
-# (kopioi konfiguraatio ylhäältä)
+# (kopioi konfiguraatio ylhäältä ja vaihda domain!)
 sudo ln -s /etc/nginx/sites-available/survey /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl restart nginx
 
-# 9. Aseta DNS (domain-hallinnassa)
-# A Record: survey -> YOUR_EC2_IP
+# 10. Aseta DNS (domain-hallinnassa)
+# A Record: survey -> 13.50.146.127
 
-# 10. Asenna SSL
+# 11. Asenna SSL
 sudo apt install -y certbot python3-certbot-nginx
 sudo certbot --nginx -d survey.yourdomain.com
 
 # VALMIS! 🎉
 # https://survey.yourdomain.com
+
+# Tulevat päivitykset: aja vain ./deploy-to-ec2.sh paikallisesti!
 ```
 
 ---

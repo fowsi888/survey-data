@@ -1,308 +1,277 @@
 <!DOCTYPE html>
 <html lang="fi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tietosuojaseloste | Smart Helper -kysely</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <style>
+      .privacy-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 40px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+      }
+
+      .privacy-container h1 {
+        color: #6366f1;
+        margin-bottom: 15px;
+        font-size: 2.5rem;
+        font-weight: 800;
+      }
+
+      .privacy-container h2 {
+        color: #764ba2;
+        margin-top: 40px;
+        margin-bottom: 20px;
+        font-size: 1.6rem;
+        font-weight: 700;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 10px;
+      }
+
+      .privacy-container p {
+        margin-bottom: 15px;
+        line-height: 1.8;
+        color: #64748b;
+        font-size: 1.05rem;
+      }
+
+      .privacy-container ul {
+        margin-bottom: 20px;
+        padding-left: 30px;
+      }
+
+      .privacy-container li {
+        margin-bottom: 10px;
+        line-height: 1.8;
+        color: #64748b;
+      }
+
+      .highlight-box {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border-left: 5px solid #3b82f6;
+        padding: 25px;
+        margin: 30px 0;
+        border-radius: 12px;
+      }
+
+      .highlight-box strong {
+        color: #1e40af;
+        font-size: 1.1rem;
+      }
+
+      .highlight-box p {
+        color: #1e3a8a;
+        margin-bottom: 10px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+      }
+
+      .info-card {
+        background: #f8fafc;
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 4px solid #6366f1;
+      }
+
+      .info-card h3 {
+        color: #1e293b;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .info-card p {
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+      }
+
+      .back-link {
+        display: inline-block;
+        margin-top: 40px;
+        padding: 14px 32px;
+        background: linear-gradient(135deg, #6366f1 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      }
+
+      .back-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+      }
+
+      .update-date {
+        color: #94a3b8;
+        font-style: italic;
+        margin-bottom: 30px;
+        font-size: 0.95rem;
+      }
+
+      .emoji-list {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .emoji-list li::before {
+        content: "✓ ";
+        color: #10b981;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .contact-box {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        padding: 25px;
+        border-radius: 12px;
+        margin-top: 30px;
+      }
+
+      .contact-box h3 {
+        color: #78350f;
+        margin-bottom: 15px;
+        font-weight: 700;
+      }
+
+      .contact-box p {
+        color: #78350f;
+      }
+
+      @media (max-width: 768px) {
         .privacy-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 40px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+          padding: 30px 20px;
+          margin: 20px 10px;
         }
 
         .privacy-container h1 {
-            color: #667eea;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
+          font-size: 2rem;
         }
 
-        .privacy-container h2 {
-            color: #764ba2;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
+        .info-grid {
+          grid-template-columns: 1fr;
         }
-
-        .privacy-container h3 {
-            color: #1e293b;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-
-        .privacy-container p {
-            margin-bottom: 15px;
-            line-height: 1.8;
-            color: #64748b;
-        }
-
-        .privacy-container ul {
-            margin-bottom: 20px;
-            padding-left: 30px;
-        }
-
-        .privacy-container li {
-            margin-bottom: 10px;
-            line-height: 1.8;
-            color: #64748b;
-        }
-
-        .highlight-box {
-            background: #f0f9ff;
-            border-left: 4px solid #0ea5e9;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 8px;
-        }
-
-        .highlight-box strong {
-            color: #0369a1;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 40px;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: transform 0.3s ease;
-        }
-
-        .back-link:hover {
-            transform: translateY(-2px);
-        }
-
-        .update-date {
-            color: #94a3b8;
-            font-style: italic;
-            margin-bottom: 30px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        table th, table td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #e2e8f0;
-        }
-
-        table th {
-            background: #f8fafc;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        table td {
-            color: #64748b;
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="privacy-container">
-        <h1>Tietosuojaseloste</h1>
-        <p class="update-date">Päivitetty: 28.10.2024</p>
+      <h1>🔒 Tietosuojaseloste</h1>
+      <p class="update-date">Päivitetty: 3.11.2025</p>
 
-        <div class="highlight-box">
-            <strong>Tärkeää:</strong> Tämä kysely kerää ainoastaan anonyymiä, tilastollista tietoa. Emme kerää henkilötietoja kuten nimeä, sähköpostiosoitetta, puhelinnumeroa, osoitetta, henkilötunnusta tai asuinpaikkakuntaa. Vastauksiasi ei voida yhdistää sinuun henkilönä.
+      <div class="highlight-box">
+        <strong>Lyhyesti:</strong>
+        <p>
+          Tämä on <strong>täysin anonyymi kysely</strong>. Keräämme vain 6
+          numeerista arviota (0-5) Smart-Helper -palvelusta. Emme kerää nimeä,
+          sähköpostia, ikää, sukupuolta tai mitään henkilötietoja.
+        </p>
+      </div>
+
+      <h2>Mitä keräämme</h2>
+      <p>
+        Kysely sisältää 6 yksinkertaista kysymystä, joihin vastataan numerolla
+        0-5:
+      </p>
+      <ul>
+        <li>Ymmärryksesi Smart-Helperistä</li>
+        <li>Puhumisen luontevuus</li>
+        <li>Tiedonsaannin nopeutuminen</li>
+        <li>Käytön todennäköisyys</li>
+        <li>Asiakaskokemuksen parantuminen</li>
+        <li>Asioinnin mukavuus</li>
+      </ul>
+      <p>
+        Lisäksi tallennetaan vastauksen <strong>aikaleima</strong> (päivämäärä
+        ja kellonaika) sekä automaattinen <strong>järjestysnumero</strong>.
+      </p>
+
+      <h2>Mitä EMME kerää</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>❌ Henkilötiedot</h3>
+          <p>
+            Ei nimeä, sähköpostia, puhelinta, osoitetta tai henkilötunnusta
+          </p>
         </div>
-
-        <h2>1. Rekisterinpitäjä</h2>
-        <p><strong>Smart Helper -projekti</strong></p>
-        <p>Tämä kysely on osa Smart Helper -tutkimusprojektia, jonka tarkoituksena on kehittää älykkäämpää kauppakeskuskokemusta.</p>
-
-        <h2>2. Henkilötietojen käsittelyn tarkoitus</h2>
-        <p>Keräämme tietoa seuraaviin tarkoituksiin:</p>
-        <ul>
-            <li>Smart Helper -tekoälyavusteisen kauppakeskusnäytön kehittäminen</li>
-            <li>Käyttäjätarpeiden ja -mieltymysten ymmärtäminen</li>
-            <li>Palvelun ja käyttöliittymän suunnittelu</li>
-            <li>Tilastollinen analyysi ja tutkimus</li>
-            <li>Palvelun laadun parantaminen</li>
-        </ul>
-
-        <h2>3. Kerättävät tiedot</h2>
-
-        <h3>3.1. Anonyymiset demografiset tiedot</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Tieto</th>
-                    <th>Kuvaus</th>
-                    <th>Henkilötieto?</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Ikäryhmä</td>
-                    <td>Valinta ikäryhmistä (alle 18, 18-24, jne.)</td>
-                    <td>❌ Ei</td>
-                </tr>
-                <tr>
-                    <td>Sukupuoli</td>
-                    <td>Valinta: mies/nainen/muu/en halua vastata</td>
-                    <td>❌ Ei</td>
-                </tr>
-                <tr>
-                    <td>Koulutustaso</td>
-                    <td>Peruskoulu/toinen aste/korkeakoulu</td>
-                    <td>❌ Ei</td>
-                </tr>
-                <tr>
-                    <td>Ammatti/asema</td>
-                    <td>Yleinen ammattikuvaus (esim. "opiskelija")</td>
-                    <td>❌ Ei*</td>
-                </tr>
-            </tbody>
-        </table>
-        <p style="font-size: 0.9rem; color: #94a3b8;">* Ammattikuvaus on yleinen eikä mahdollista yksilöintiä</p>
-
-        <h3>3.2. Käyttäytymis- ja mieltymystiedot</h3>
-        <ul>
-            <li>Asiointitiheys kauppakeskuksessa</li>
-            <li>Etsityt tietotyypit kauppakeskuksesta</li>
-            <li>Tietolähteet (mistä etsit tietoa)</li>
-            <li>Kiinnostavat tekoälypalvelut</li>
-            <li>Käyttöliittymätoiveet</li>
-        </ul>
-
-        <h3>3.3. Tekniset tiedot</h3>
-        <ul>
-            <li>Vastauksen aikaleima (päivämäärä ja kellonaika)</li>
-            <li>Vastauksen tunnistenumero (automaattinen järjestysnumero)</li>
-        </ul>
-
-        <div class="highlight-box">
-            <strong>Huomio:</strong> Emme kerää IP-osoitetta, evästeitä, selaimen tietoja, sijaintitietoja tai muita tunnistavia teknisiä tietoja. Kysely on täysin anonyymi.
+        <div class="info-card">
+          <h3>❌ Demografiset tiedot</h3>
+          <p>Ei ikää, sukupuolta, koulutusta tai ammattia</p>
         </div>
-
-        <h2>4. Tietojen keräämisen peruste</h2>
-        <p>Tietojen käsittelyn oikeusperuste on:</p>
-        <ul>
-            <li><strong>Suostumus:</strong> Vastaamalla kyselyyn annat suostumuksesi tietojen käsittelyyn</li>
-            <li><strong>Oikeutettu etu:</strong> Palvelun kehittäminen ja parantaminen</li>
-        </ul>
-
-        <h2>5. Tietojen vastaanottajat</h2>
-        <p>Kerättyjä tietoja käsittelevät:</p>
-        <ul>
-            <li>Smart Helper -projektitiimi (tutkimus ja kehitys)</li>
-            <li>Valtuutetut analyytikot (tilastollinen analyysi)</li>
-        </ul>
-        <p><strong>Tietoja ei luovuteta kolmansille osapuolille</strong> ilman erillistä suostumustasi, paitsi:</p>
-        <ul>
-            <li>Lakisääteisen velvoitteen nojalla</li>
-            <li>Aggregoituna, täysin anonyyminä tilastotietona</li>
-        </ul>
-
-        <h2>6. Tietojen säilytysaika</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Tieto</th>
-                    <th>Säilytysaika</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Kyselyvastaukset</td>
-                    <td>Enintään 5 vuotta keräämisvuodesta</td>
-                </tr>
-                <tr>
-                    <td>Tilastoraportit</td>
-                    <td>Pysyvästi (täysin anonyyminä)</td>
-                </tr>
-            </tbody>
-        </table>
-        <p>Tiedot poistetaan automaattisesti säilytysajan umpeuduttua tai projektin päättyessä.</p>
-
-        <h2>7. Tietojen siirto EU/ETA-alueen ulkopuolelle</h2>
-        <p><strong>Tietoja ei siirretä Euroopan unionin tai Euroopan talousalueen ulkopuolelle.</strong></p>
-        <p>Palvelin sijaitsee EU-alueella tai ETA-alueella, ja kaikki data säilytetään näiden alueiden sisällä.</p>
-
-        <h2>8. Rekisteröidyn oikeudet</h2>
-
-        <div class="highlight-box">
-            <strong>Huomio anonymiteetistä:</strong> Koska vastaukset ovat täysin anonyymejä ilman tunnistettavia tietoja, monia GDPR-oikeuksia ei voida toteuttaa, sillä emme voi tunnistaa yksittäisiä vastaajia.
+        <div class="info-card">
+          <h3>❌ Teknisiä tietoja</h3>
+          <p>Ei IP-osoitetta, evästeitä, selaimen tietoja tai sijaintia</p>
         </div>
+      </div>
 
-        <h3>8.1. Oikeudet, jotka eivät ole käytettävissä (anonymiteetin vuoksi)</h3>
-        <ul>
-            <li><strong>Tarkastusoikeus:</strong> Emme voi tunnistaa vastaustasi tietokannasta</li>
-            <li><strong>Oikeus tietojen oikaisuun:</strong> Emme voi tunnistaa vastaustasi</li>
-            <li><strong>Oikeus tietojen poistamiseen:</strong> Emme voi tunnistaa vastaustasi</li>
-            <li><strong>Oikeus tietojen siirtämiseen:</strong> Emme voi tunnistaa vastaustasi</li>
-            <li><strong>Vastustamisoikeus:</strong> Emme voi tunnistaa vastaustasi</li>
-        </ul>
+      <h2>Miksi keräämme tietoja</h2>
+      <p>Vastauksia käytetään:</p>
+      <ul class="emoji-list">
+        <li>Smart Helper -palvelun kehittämiseen</li>
+        <li>Käyttäjäpalautteen analysointiin</li>
+        <li>Käyttökelpoisuuden arviointiin</li>
+      </ul>
 
-        <h3>8.2. Käytettävissä olevat oikeudet</h3>
-        <ul>
-            <li><strong>Oikeus peruuttaa suostumus:</strong> Voit jättää vastaamatta kyselyyn tai keskeyttää vastaamisen milloin tahansa ennen lähettämistä</li>
-            <li><strong>Oikeus tehdä valitus:</strong> Voit tehdä valituksen tietosuojavaltuutetulle, jos uskot, että tietojasi käsitellään virheellisesti</li>
-        </ul>
+      <h2>Tietoturva</h2>
+      <ul class="emoji-list">
+        <li>SSL/TLS-salaus (HTTPS) kaikessa tiedonsiirrossa</li>
+        <li>Tietokanta suojattu salasanalla</li>
+        <li>Pääsy rajoitettu vain valtuutetuille henkilöille</li>
+      </ul>
 
-        <h2>9. Tietoturva ja suojaaminen</h2>
-        <p>Suojaamme kerättyjä tietoja seuraavilla toimenpiteillä:</p>
-        <ul>
-            <li>✅ SSL/TLS-salaus (HTTPS) kaikessa tiedonsiirrossa</li>
-            <li>✅ Tietokanta suojattu salasanalla</li>
-            <li>✅ Säännölliset varmuuskopiot</li>
-            <li>✅ Pääsy tietoihin rajoitettu vain valtuutetuille henkilöille</li>
-            <li>✅ Palvelin suojattu palomuurilla</li>
-            <li>✅ Säännölliset tietoturvapäivitykset</li>
-        </ul>
+      <h2>Tietojen säilytys ja oikeutesi</h2>
+      <p><strong>Säilytysaika:</strong> Enintään 5 vuotta keräämisvuodesta.</p>
+      <p>
+        <strong>Oikeutesi:</strong> Koska vastaukset ovat täysin anonyymejä,
+        emme voi tunnistaa yksittäisiä vastauksia. Voit keskeyttää vastaamisen
+        milloin tahansa ennen lähettämistä.
+      </p>
 
-        <h2>10. Evästeet ja seuranta</h2>
-        <p><strong>Tämä kysely EI käytä evästeitä (cookies).</strong></p>
-        <p>Emme käytä analytiikkapalveluita (kuten Google Analytics) tai muita seurantateknologioita, jotka keräisivät tunnistettavia tietoja.</p>
+      <h2>Valvontaviranomainen</h2>
+      <p>
+        Jos sinulla on huolia tietosuojasta, voit ottaa yhteyttä
+        <strong>Tietosuojavaltuutetun toimistoon</strong>:
+      </p>
+      <p>
+        📍 PL 800, 00531 Helsinki<br />
+        📧 tietosuoja@om.fi<br />
+        📞 029 566 6700<br />
+        🌐 <a href="https://tietosuoja.fi" target="_blank">tietosuoja.fi</a>
+      </p>
 
-        <h2>11. Automaattinen päätöksenteko ja profilointi</h2>
-        <p><strong>Emme käytä automaattista päätöksentekoa tai profilointia</strong> vastausten perusteella.</p>
-        <p>Tietoja käytetään ainoastaan tilastolliseen analyysiin ja palvelun kehittämiseen.</p>
+      <div class="contact-box">
+        <h3>Yhteystiedot</h3>
+        <p>
+          <strong>Smart Helper -projekti</strong><br />
+          Sähköposti: qaalinka@hotmail.com<br />
+          Puhelinnumero: 0451377021
+        </p>
+      </div>
 
-        <h2>12. Alaikäiset</h2>
-        <p>Kysely on tarkoitettu kaikille ikäryhmille. Jos olet alle 15-vuotias, suosittelemme kysymään huoltajan lupaa ennen vastaamista.</p>
+      <div class="highlight-box" style="margin-top: 50px">
+        <strong>Yhteenveto:</strong>
+        <p>
+          ✅ Kysely on täysin anonyymi<br />
+          ✅ Keräämme vain 6 numeerista vastausta (0-5)<br />
+          ✅ Ei henkilötietoja, ei evästeitä, ei seurantaa<br />
+          ✅ Tiedot suojattu ja salattu<br />
+          ✅ Käytetään vain palvelun kehittämiseen
+        </p>
+      </div>
 
-        <h2>13. Muutokset tietosuojaselosteeseen</h2>
-        <p>Pidätämme oikeuden päivittää tätä tietosuojaselostetta tarvittaessa. Muutoksista ilmoitetaan kyselypalvelussa.</p>
-        <p>Viimeisin päivitys: <strong>28.10.2024</strong></p>
-
-        <h2>14. Yhteystiedot</h2>
-        <p>Jos sinulla on kysymyksiä tietosuojasta tai haluat käyttää oikeuksiasi, ota yhteyttä:</p>
-        <p><strong>Smart Helper -projekti</strong><br>
-        Sähköposti: [LISÄÄ SÄHKÖPOSTI]<br>
-        Puhelinnumero: [LISÄÄ NUMERO]</p>
-
-        <h2>15. Valvontaviranomainen</h2>
-        <p>Tietosuojavaltuutetun toimisto:<br>
-        <strong>Osoite:</strong> PL 800, 00531 Helsinki<br>
-        <strong>Sähköposti:</strong> tietosuoja@om.fi<br>
-        <strong>Puhelin:</strong> 029 566 6700<br>
-        <strong>Web:</strong> <a href="https://tietosuoja.fi" target="_blank">https://tietosuoja.fi</a></p>
-
-        <div class="highlight-box" style="margin-top: 50px;">
-            <h3 style="margin-top: 0;">Yhteenveto</h3>
-            <p><strong>Kerättävät tiedot:</strong> Anonyymiä demografista ja käyttäytymistietoa</p>
-            <p><strong>Henkilötiedot:</strong> ❌ Ei nimeä, sähköpostia, osoitetta, puhelinnumeroa tai henkilötunnusta</p>
-            <p><strong>Tarkoitus:</strong> Smart Helper -palvelun kehittäminen</p>
-            <p><strong>Säilytysaika:</strong> Enintään 5 vuotta</p>
-            <p><strong>Tietoturva:</strong> SSL-salaus, suojattu tietokanta, rajoitettu pääsy</p>
-        </div>
-
-        <a href="/" class="back-link">← Takaisin kyselyyn</a>
+      <a href="/" class="back-link">← Takaisin kyselyyn</a>
     </div>
-</body>
+  </body>
 </html>
